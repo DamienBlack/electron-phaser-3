@@ -11,7 +11,7 @@ function createWindow () {
     let settings = require('./settings');
 
     // Create the browser window.
-    win = new BrowserWindow({fullscreen: true, frame: false, webPreferences: {experimentalFeatures: false }});
+    win = new BrowserWindow({fullscreen: true, frame: false, webPreferences: {nodeIntegration: true, devTools: settings.devToolsOpen}});
 
     // and load the index.html of the app.
     win.loadURL(url.format({
@@ -19,11 +19,6 @@ function createWindow () {
         protocol: 'file:',
         slashes: true
     }));
-
-    // Open the DevTools.
-    if (settings.devToolsOpen) {
-        win.webContents.openDevTools();
-    }
 
     // Emitted when the window is closed.
     win.on('closed', () => {

@@ -1,0 +1,3 @@
+Any `.js` file placed in this folder will be included. 
+Functions, variables and classes defined in these files will be placed in the global namespace. 
+All subdirectories within the folder will have their contents loaded before the scripts outside the subdirectory.

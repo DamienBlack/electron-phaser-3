@@ -3,8 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <title>Testing</title>
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="bin/phaser-3.20.1.js"></script>
+    <script src="bin/jquery-3.4.1.js"></script>
+    <script>if (window.module) module = window.module;</script>
+    <link rel="stylesheet" type="text/css" href="bin/base.css">
 </head>
 <body>
-    Hello
+    <script>
+        settings = require('./settings');
+
+        $('body').css('backgroundColor', settings.windowBackgroundColor);
+
+        const HEIGHT = settings.canvasHeight;
+        const ratio = $(window).width()/$(window).height();
+        const WIDTH = ratio*HEIGHT;
+
+        settings.canvasResolution = {width: WIDTH, height: HEIGHT};
+
+        var config = {
+            type: Phaser.AUTO,
+            width: WIDTH,
+            height: HEIGHT,
+            backgroundColor: settings.canvasBackgroundColor,
+            scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+            }
+        };
+
+        var game = new Phaser.Game(config);
+        game.world = {};
+        Phaser.Scene.prototype.world = game.world;
+        game.world.electronPhaserSettings = settings;
+
+        let fs = require('fs');
+
+        loadCustomScripts();
+
+        function loadCustomScripts() {
+            loadScriptDirectoryRecursive('./resources/app/modules/', 'modules/');
+            loadScriptDirectoryRecursive('./resources/app/js/', 'js/');
+            loadStates();
+        }
+
+        function loadScriptDirectoryRecursive(readDirectory, includeDirectory) {
+            let allFiles = fs.readdirSync(readDirectory);
+            for (let filePath of allFiles) {
+                let filenameSplit = filePath.split(".");
+
+                if (filenameSplit.length === 1) {
+                    loadScriptDirectoryRecursive(readDirectory + filePath + '/', includeDirectory + filePath + '/');
+                }
+            }
+            for (let filePath of allFiles) {
+                let filenameSplit = filePath.split(".");
+
+                if (filenameSplit.length > 1) {
+                    let fileType = filenameSplit[filenameSplit.length-1];
+                    if (fileType === 'js') {
+                        $.ajax(includeDirectory+filePath, {
+                            dataType: "script",
+                            async: false
+                        });
+                    }
+                }
+            }
+        }
+
+        function loadStates() {
+            let boot = require('./bin/bootScene').startup;
+            game.scene.add('Boot', boot);
+
+            fs.readdir('./resources/app/scenes/', function(err, items) {
+                for (let filePath of items) {
+                    let filenameSplit = filePath.split(".");
+
+                    let fileType = filenameSplit[1];
+                    if (fileType === 'js') {
+                        let stateName = filenameSplit[0];
+                        let state = require('./scenes/' + stateName).state;
+                        game.scene.add(stateName, state);
+                    }
+                }
+            });
+
+            game.scene.start('Boot');
+        }
+    </script>
 </body>
 </html>
