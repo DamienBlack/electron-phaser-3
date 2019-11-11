@@ -81,9 +81,9 @@
 
                     let fileType = filenameSplit[1];
                     if (fileType === 'js') {
-                        let stateName = filenameSplit[0];
-                        let state = require('./scenes/' + stateName).state;
-                        game.scene.add(stateName, state);
+                        let sceneName = filenameSplit[0];
+                        let scene = require('./scenes/' + sceneName).scene;
+                        game.scene.add(sceneName, scene);
                     }
                 }
             });

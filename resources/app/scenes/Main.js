@@ -1,4 +1,4 @@
-class State extends Phaser.Scene  {
+class Scene extends Phaser.Scene  {
     preload() {
 
     };
@@ -13,5 +13,5 @@ class State extends Phaser.Scene  {
 }
 
 module.exports = {
-    state: State
+    scene: Scene
 };

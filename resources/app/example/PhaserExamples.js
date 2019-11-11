@@ -1,4 +1,4 @@
-class State extends Phaser.Scene  {
+class Scene extends Phaser.Scene  {
     preload() {
         this.load.image('turkey', 'assets/images/turkey.jpg');
         this.load.html('textInput', 'assets/html/textInput.html');
@@ -71,5 +71,5 @@ class State extends Phaser.Scene  {
 }
 
 module.exports = {
-    state: State
+    scene: Scene
 };
